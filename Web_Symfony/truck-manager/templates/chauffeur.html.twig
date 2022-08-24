@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+{% block head %}
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+	   
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+{% endblock %}
+{% block body %}
+<body>
+<div  class='container'>
+	<div  class='row'>
+        <div  class='col-12 edit-table d-flex justify-content-center align-items-center flex-column'>
+            <h1>Editer les chauffeurs disponibles</h1>
+            <table>
+                    <tr>
+                        <td>Id chauffeur</td>
+                        <td>Nom prenom chauffeur</td>
+                        <td>supprimer</td>
+                    </tr>
+                {% for chauffeur in listeChauffeur %}
+                    <tr>
+                        <td>{{ chauffeur.id }}</td>
+                        <td>{{ chauffeur.NomPrenom }}</td>
+                        <td><a href="{{ path('deletechauffeur', { 'id': chauffeur.id })     }}">supprimer</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+            <div>
+                <br><br><h2>Ajouter un chauffeur</h2>
+                    {{ form_start(form) }}
+                        {{ form_label(form.NomPrenom) }}
+                        {{ form_widget(form.NomPrenom) }}
+                        
+                        {{ form_label(form.save) }}
+						{{ form_widget(form.save) }}
+
+                    {{ form_end(form) }}
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

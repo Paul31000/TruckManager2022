@@ -1,0 +1,236 @@
+{% extends 'base.html.twig' %}
+{% block head %}
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+	   
+	
+	<script src="{{asset('JS/infos_camions.js')}}"></script>
+
+{% endblock %}
+{% block body %}
+<body>
+
+<div  class='container-fluid'>
+	<div  class='row'>
+		<div  class='col-8'>
+			<div id="map" style="height: 850px;width:100%;"></div>
+
+				
+
+				<script>
+						
+											var mapOptions = {
+												center: [43.596703789608,1.4420458037092],
+												scrollWheelZoom: false,
+												zoom: 8
+												}
+											var map = L.map("map", mapOptions);
+											var layer = new L.TileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+											map.addLayer(layer);
+											
+											var iconArrive = L.icon({
+												iconUrl: '{{asset('images/arrive.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconPanne = L.icon({
+												iconUrl: '{{asset('images/en_panne.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconOk = L.icon({
+												iconUrl: '{{asset('images/en_deplacement.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconPause = L.icon({
+												iconUrl: '{{asset('images/en_pause.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											{% for camion in listeCamion %}
+												{% set affiche = 0 %}
+												{% if camion.camionstatus.arrive == true %}
+													
+
+													new L.marker(
+													[{{ camion.camionstatus.latitude }},
+													{{ camion.camionstatus.longitude }}],
+													{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+														icon: iconArrive}
+														
+													).addTo(map);
+													
+													
+													{% set affiche = 1 %}
+												{% endif %}
+												{% if camion.camionstatus.enPanne == true and affiche==0 %}
+													var marker= 
+
+													new L.marker(
+													[{{ camion.camionstatus.latitude }},
+													{{ camion.camionstatus.longitude }}],
+													{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													 icon: iconPanne}
+													 
+													);
+													
+													marker.on('click', onClick);
+													marker.addTo(map);
+													
+													{% set affiche = 1 %}
+												{% endif %}
+												{% if camion.camionstatus.enPause == true and affiche==0 %}
+													var marker= 
+
+													new L.marker(
+													[{{ camion.camionstatus.latitude }},
+													{{ camion.camionstatus.longitude }}],
+													{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													 icon: iconPause}
+													 
+													);
+													
+													marker.on('click', onClick);
+													marker.addTo(map);
+
+													
+													{% set affiche = 1 %}
+												{% endif %}
+												{% if affiche==0 %}
+													var marker= 
+
+													new L.marker(
+													[{{ camion.camionstatus.latitude }},
+													{{ camion.camionstatus.longitude }}],
+													{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													 icon: iconOk}
+													 
+													);
+													
+													marker.on('click', onClick);
+													marker.addTo(map);
+													
+												{% endif %}
+											{% endfor %}
+
+											function onClick(e) {
+        										window.open(this.options.win_url,"_self");
+    										}
+										
+				</script>
+				<div  class='legende'>
+					<div><img class="icone_legende" src="{{asset('images/arrive.png')}}" alt="icone arrive"> camion arrive</div>
+					<div><img class="icone_legende" src="{{asset('images/en_panne.png')}}" alt="icone arrive"> camion en panne</div>
+					<div><img class="icone_legende" src="{{asset('images/en_pause.png')}}" alt="icone arrive"> camion en pause</div>
+					<div><img class="icone_legende" src="{{asset('images/en_deplacement.png')}}" alt="icone arrive"> camion en deplacement</div>
+				</div>
+		</div>
+
+		<div  class='col-4 scroll'>
+		
+			<div  class='legende'><h2>Camions en panne</h2><img class="icone_legende" src="{{asset('images/en_panne.png')}}" alt="icone arrive"></div>
+			
+			<table>
+				<tr>
+					<td>immatriculation</td>
+					<td>chauffeur</td>
+					<td>voir le camion</td>
+				</tr>
+				{% for camion in listeCamion %}
+					{% if camion.camionstatus.enPanne == true %}
+						<tr>
+							<td>{{ camion.imatriculation }}</td>
+							<td>{{ camion.camionstatus.chauffeur }}</td>
+							<td><a href="/mapcamion/{{camion.id}}">voir camion</a></td>
+						</tr>
+					{% endif %}
+				{% endfor %}
+			</table>
+
+			<br><br>
+			<div  class='legende'><h2>Camions en pause</h2><img class="icone_legende" src="{{asset('images/en_pause.png')}}" alt="icone arrive"></div>
+			<table>
+				<tr>
+					<td>immatriculation</td>
+					<td>chauffeur</td>
+					<td>voir le camion</td>
+				</tr>
+				{% for camion in listeCamion %}
+					{% if camion.camionstatus.enPause == true %}
+						<tr>
+							<td>{{ camion.imatriculation }}</td>
+							<td>{{ camion.camionstatus.chauffeur }}</td>
+							<td><a href="/mapcamion/{{camion.id}}">voir camion</a></td>
+						</tr>
+					{% endif %}
+				{% endfor %} 
+			</table>
+
+			<br><br>
+			<div  class='legende'><h2>Camions en déplacement</h2><img class="icone_legende" src="{{asset('images/en_deplacement.png')}}" alt="icone arrive"></div>
+			<table>
+				<tr>
+					<td>immatriculation</td>
+					<td>chauffeur</td>
+					<td>voir le camion</td>
+				</tr>
+				{% for camion in listeCamion %}
+					{% if camion.camionstatus.enPause == false and camion.camionstatus.enPanne == false and camion.camionstatus.arrive == false %}
+						<tr>
+							<td>{{ camion.imatriculation }}</td>
+							<td>{{ camion.camionstatus.chauffeur }}</td>
+							<td><a href="/mapcamion/{{camion.id}}">voir camion</a></td>
+						</tr>
+					{% endif %}
+				{% endfor %} 
+			</table>
+
+			<br><br>
+			<div  class='legende'><h2>Camions arrivés</h2><img class="icone_legende" src="{{asset('images/arrive.png')}}" alt="icone arrive"></div>
+			<table>
+				<tr>
+					<td>immatriculation</td>
+					<td>chauffeur</td>
+					<td>visa</td>
+				</tr>
+				{% for camion in listeCamion %}
+					{% if camion.camionstatus.arrive == true %}
+						<tr>
+							<td>{{ camion.imatriculation }}</td>
+							<td>{{ camion.camionstatus.chauffeur }}</td>
+							<td><a href="{{ path('deletestatus', { 'idStatus': camion.camionstatus.id,'idCamion': camion.id })     }}">vu</a></td>
+						</tr>
+					{% endif %}
+				{% endfor %} 
+			</table>
+
+			<br><br>
+			<h2>Tous les camions</h2>
+			<table>
+				<tr>
+					<td>immatriculation</td>
+					<td>chauffeur</td>
+					<td>voir le camion</td>
+				</tr>
+				{% for camion in listeCamion %}
+						<tr>
+							<td>{{ camion.imatriculation }}</td>
+							<td>{{ camion.camionstatus.chauffeur }}</td>
+							<td><a href="/mapcamion/{{camion.id}}">voir camion</a></td>
+						</tr>
+				{% endfor %} 
+			</table>
+			<br><br>
+		</div>	
+
+
+	</div>
+</div>
+{% endblock %}

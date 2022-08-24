@@ -1,0 +1,9 @@
+#index:
+#    path: /
+#    controller: App\Controller\DefaultController::index
+#hello:
+#    path: /map
+#    controller: App\Controller\MapController::sayHello
+
+
+

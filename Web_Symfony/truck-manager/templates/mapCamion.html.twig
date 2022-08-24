@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+{% block head %}
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+	   
+	
+	<script src="{{asset('JS/infos_camions.js')}}"></script>
+
+{% endblock %}
+{% block body %}
+<body>
+
+<div  class='container-fluid'>
+	<div  class='row'>
+		<div  class='col-8'>
+			<div id="map" style="height: 850px;width:100%;"></div>
+			<div  class='legende'>
+				<div><img class="icone_legende" src="{{asset('images/arrive.png')}}" alt="icone arrive"> camion arrive</div>
+				<div><img class="icone_legende" src="{{asset('images/en_panne.png')}}" alt="icone arrive"> camion en panne</div>
+				<div><img class="icone_legende" src="{{asset('images/en_pause.png')}}" alt="icone arrive"> camion en pause</div>
+				<div><img class="icone_legende" src="{{asset('images/en_deplacement.png')}}" alt="icone arrive"> camion en deplacement</div>
+			</div>
+		
+				<!--The div element for the map -->
+
+
+					
+
+
+				<script>
+						
+											var mapOptions = {
+												center: [{{ camion.camionstatus.latitude }},{{ camion.camionstatus.longitude }}],
+												scrollWheelZoom: false,
+												zoom: 5
+												}
+											var map = L.map("map", mapOptions);
+											var layer = new L.TileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png");
+											map.addLayer(layer);
+											
+											var iconArrive = L.icon({
+												iconUrl: '{{asset('images/arrive.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconPanne = L.icon({
+												iconUrl: '{{asset('images/en_panne.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconOk = L.icon({
+												iconUrl: '{{asset('images/en_deplacement.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											var iconPause = L.icon({
+												iconUrl: '{{asset('images/en_pause.png')}}',
+												iconSize: [35, 43],
+												iconAnchor: [17, 43]
+											});
+											
+											{% set affiche = 0 %}
+											{% if camion.camionstatus.arrive == true %}
+												
+
+												new L.marker(
+												[{{ camion.camionstatus.latitude }},
+												{{ camion.camionstatus.longitude }}],
+												{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													icon: iconArrive}
+													
+												).addTo(map);
+												
+												
+												{% set affiche = 1 %}
+											{% endif %}
+											{% if camion.camionstatus.enPanne == true and affiche==0 %}
+												
+
+												new L.marker(
+												[{{ camion.camionstatus.latitude }},
+												{{ camion.camionstatus.longitude }}],
+												{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													icon: iconPanne}
+													
+												).addTo(map);
+												
+												
+												{% set affiche = 1 %}
+											{% endif %}
+											{% if camion.camionstatus.enPause == true and affiche==0 %}
+												
+
+												new L.marker(
+												[{{ camion.camionstatus.latitude }},
+												{{ camion.camionstatus.longitude }}],
+												{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													icon: iconPause}
+													
+												).addTo(map);
+
+												
+												{% set affiche = 1 %}
+											{% endif %}
+											{% if affiche==0 %}
+												
+
+												new L.marker(
+												[{{ camion.camionstatus.latitude }},
+												{{ camion.camionstatus.longitude }}],
+												{win_url: "http://127.0.0.1:8000/mapcamion/{{camion.id}}/",
+													icon: iconOk}
+													
+												).addTo(map);
+												
+											{% endif %}
+											var PointTrajet=[
+												{% for camionStatus in positionHistory %}
+												[{{camionStatus.latitude}}, {{camionStatus.longitude}}],
+												{% endfor %}
+												];
+											var polyline = L.polyline(PointTrajet, {color: '#09a5a7'}).addTo(map);
+										
+				</script>
+				
+		</div>
+		<div  class='col-4'>
+		<br><br><br>
+		Chauffeur camion : {{ camion.camionstatus.chauffeur }}<br>
+		
+		Etat du camion:
+		{% set affiche = 0 %}
+		{% if camion.camionstatus.enPanne == true and affiche==0 %}
+			<br><img class="status-image" src="{{asset('images/panne.jpg')}}" alt="en panne">
+		{% set affiche = 1 %}
+		{% endif %}
+		{% if camion.camionstatus.enPause == true and affiche==0 %}
+			<br><img class="status-image" src="{{asset('images/pause.png')}}" alt="en pause">
+		{% set affiche = 1 %}
+		{% endif %}
+		{% if affiche==0 %}
+			<br><img class="status-image" src="{{asset('images/ok.png')}}" alt="en pause">
+		{% endif %}
+		</div>	
+	</div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+{% block head %}
+
+     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+	   
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+	<script src="{{asset('JS/infos_camions.js')}}"></script>
+
+{% endblock %}
+
+{% block body %}
+	<div  class='container'>
+		<div  class='row'>
+			<div  class='col-12 edit-table d-flex justify-content-center align-items-center flex-column'>
+				<div>
+					<h1>Editer les camions disponibles</h1>
+				</div>
+				
+				<table>
+						<tr>
+							<td>id camion</td>
+							<td>Immatriculation camion</td>
+							<td>supprimer</td>
+						</tr>
+					{% for camion in listeCamion %}
+						<tr>
+							<td>{{ camion.id }}</td>
+							<td>{{ camion.imatriculation }}</td>
+							<td><a href="{{ path('deletecamion', { 'id': camion.id })     }}">supprimer</a></td>
+						</tr>
+					{% endfor %}
+				</table>
+				
+				<div>
+					<br><br><h2>Ajouter un camion</h2>
+						{{ form_start(form) }}
+							{{ form_label(form.imatriculation) }}
+							{{ form_widget(form.imatriculation) }}
+
+							{{ form_label(form.save) }}
+							{{ form_widget(form.save) }}
+
+						{{ form_end(form) }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

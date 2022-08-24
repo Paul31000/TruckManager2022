@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">MyAppV3</string>
+    <string name="title_activity_db_truck">dbTruck</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="textview">TextView</string>
+    <string name="button">Validez</string>
+    <string name="donnner_les_infos">Donnner les infos :</string>
+    <string name="donner_le_nom_et_prenom">Donner le Nom et Prenom</string>
+    <string name="donner_l_id">Donner l\'id</string>
+    <string name="mettre_en_pause_la_localisation">Mettre en pause la localisation</string>
+    <string name="reprendre_la_localisation">Reprendre la localisation</string>
+    <string name="mettre_en_panne">Mettre en panne</string>
+    <string name="vous_etes_en_pause">Vous etes en pause</string>
+    <string name="vous_etes_en_panne">Vous etes en panne</string>
+    <string name="nomprenom">NomPrenom</string>
+    <string name="cliquez_ici_quand_vous_etes_arriver_destination">Cliquez ici quand vous etes arriver à destination</string>
+</resources>
